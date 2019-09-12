@@ -120,7 +120,7 @@ Create the `prometheus.yaml` file
 
 [role="command"]
 ----
-[root@rhel7-openshift ~]# oc apply -f service_monitor.yaml
+[root@rhel7-openshift ~]# oc apply -f prometheus.yaml
 [root@rhel7-openshift ~]# oc apply -f bundle.yaml
 ----
 
