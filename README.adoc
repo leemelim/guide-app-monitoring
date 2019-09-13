@@ -268,7 +268,7 @@ include::code/grafana-datasources.yaml[]
 [root@rhel-2EFK ~]# oc apply -f grafana-datasources.yaml
 ----
 
-6. Acquire The *\[grafana-ocp token\]* by using the following command.
+6. Acquire the *[grafana-ocp token]* by using the following command.
 
 [role="command"]
 ----
