@@ -38,7 +38,7 @@ image::/img/guide/prometheusOperator.png[link="/img/guide/prometheusOperator.png
 There are two ways to install the Prometheus Operator. 
 
 	1. One is through Openshift Operator Lifecycle Manager or OLM, (which is still in its technology preview phase in release 3.11 of Openshift). This approach installs an older version of the Prometheus Operator that is supported by Red Hat. 
-	2. Another approach is to install Prometheus Operator by following the guide from the https://github.com/coreos/prometheus-operator[Prometheus Operator git repository]. Since OLM is still at its technical preview stage and requires a Red Hat subscription account for installation, this guide showsthe installation without OLM to target a larger audience base. The guide will be updated with the OLM approach when Kabanero officially adopts Openshift 4.x.
+	2. Another approach is to install Prometheus Operator by following the guide from the https://github.com/coreos/prometheus-operator[Prometheus Operator git repository]. Since OLM is still at its technical preview stage and requires a Red Hat subscription account for installation, this guide shows the installation without OLM to target a larger audience base. The guide will be updated with the OLM approach when Kabanero officially adopts Openshift 4.x.
 
 === Prometheus Operator Installation without OLM
 
