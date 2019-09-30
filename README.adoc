@@ -248,7 +248,7 @@ Regardless of which approach was used to deploy Prometheus on OKD, use Grafana d
 [root@rhel7-okd ~]# oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/grafana/grafana.yaml -p NAMESPACE=grafana
 ----
 
-3. Grant the *grafana* service account view access to the *prometheus* (or *prometheus operator*) namespace 
+3. Grant the *grafana* service account view access to the *prometheus* namespace 
 
 [role="command"]
 ----
