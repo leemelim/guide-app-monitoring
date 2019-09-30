@@ -56,11 +56,11 @@ The following procedure is based on the https://github.com/coreos/prometheus-ope
 
 2. Open the `bundle.yaml` file and change all instances of **namespace: default** to the namespace where you want to deploy the Prometheus Operator. For example, if the namespace is **namespace: prometheus-operator**, you might need to create a new namespace called **prometheus-operator** if it does not exist on your OpenShift cluster.
 
-3. Save the `bundle.yaml` file and deploy the Prometheus Operator using the following command.
+3. Save the `bundle.yaml` file and deploy the Prometheus Operator using the following command. The *--deny-namespace* argument allows the exclusion of certain namespaces to be watched by the Prometheus Operator. By default, Prometheus Operator oversees the Prometheus deployments across all namespaces. This could be problematic if there are multiple Prometheus Operator deployments on the OKD cluster. For instance, the OKD's Cluster Monitoring feature also deploys a Prometheus Operator in namespace *openshift-monitoring*.  Therefore, *openshift-monitoring* namespace should be excluded by our Prometheus Operator to prevent undesired behaviors.
 
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
 ----
 
 You may receive an error message like the one below when running the command.
@@ -75,7 +75,7 @@ To correct the error, change the **runAsUser: 65534** field in the `bundle.yaml`
 [role="command"]
 ----
 [root@rhel7-okd ~]# oc delete -f bundle.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
 ----
 
 service_monitor.yaml
@@ -123,7 +123,7 @@ Create the `prometheus.yaml` file
 [role="command"]
 ----
 [root@rhel7-okd ~]# oc apply -f prometheus.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
 ----
 
 7. Verify that the Prometheus services have successfully started. The prometheus-operated service is created automatically by the prometheus-operator, and is used for registering all deployed Prometheus instances. 
@@ -248,7 +248,7 @@ Regardless of which approach was used to deploy Prometheus on OKD, use Grafana d
 [root@rhel7-okd ~]# oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/grafana/grafana.yaml -p NAMESPACE=grafana
 ----
 
-3. Grant the *grafana* service account view access to the *prometheus* (or *prometheus operator*) namespace 
+3. Grant the *grafana* service account view access to the *prometheus* namespace 
 
 [role="command"]
 ----
