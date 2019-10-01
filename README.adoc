@@ -5,7 +5,7 @@ permalink: /guides/app-monitoring/
 :page-layout: guide-multipane
 :page-duration: 60 minutes
 :page-releasedate: 2019-08-27
-:page-guide-category: monitoring
+:page-guide-category: basic
 :page-essential: true
 :page-essential-order: 1
 :page-description: Learn how to monitor applications on OKD with Prometheus and Grafana.
