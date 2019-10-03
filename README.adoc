@@ -188,7 +188,7 @@ For users who just migrated their applications to OKD and define their own Prome
 
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-project Prometheus
+[root@rhel7-okd ~]# oc new-project prometheus
 ----
 
 1. Deploy the Prometheus using the sample `prometheus.yaml` file from https://github.com/openshift/origin/tree/master/examples/prometheus[here]
@@ -234,7 +234,7 @@ Make sure the monitored application's pods are started with the following annota
 
 5. Verify the scrape target is up and available in Prometheus by using Prometheus's web console as follows: Click *Console -> Status -> Targets*.
 
-If the service endpoint is discovered, but Prometheus is reporting a *DOWN* status, you need to make the *prometheus-operator* project globally accessible.
+If the service endpoint is discovered, but Prometheus is reporting a *DOWN* status, you need to make the *prometheus* project globally accessible.
 
 [role="command"]
 ----
