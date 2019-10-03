@@ -54,13 +54,24 @@ The following procedure is based on the https://github.com/coreos/prometheus-ope
 [root@rhel7-okd ~]# git clone https://github.com/coreos/prometheus-operator
 ----
 
-2. Open the `bundle.yaml` file and change all instances of **namespace: default** to the namespace where you want to deploy the Prometheus Operator. For example, if the namespace is **namespace: prometheus-operator**, you might need to create a new namespace called **prometheus-operator** if it does not exist on your OpenShift cluster.
-
-3. Save the `bundle.yaml` file and deploy the Prometheus Operator using the following command. The *--deny-namespace* argument allows the exclusion of certain namespaces to be watched by the Prometheus Operator. By default, Prometheus Operator oversees the Prometheus deployments across all namespaces. This could be problematic if there are multiple Prometheus Operator deployments on the OKD cluster. For instance, the OKD's Cluster Monitoring feature also deploys a Prometheus Operator in namespace *openshift-monitoring*.  Therefore, *openshift-monitoring* namespace should be excluded by our Prometheus Operator to prevent undesired behaviors.
+2. Create a new namespace for our Prometheus Operator deployment.
 
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
+[root@rhel7-okd ~]# oc new-project prometheus-operator
+----
+
+3. Open the `bundle.yaml` file and change all instances of **namespace: default** to the the newly created namespace **namespace: prometheus-operator**
+
+4. Add the line *- --deny-namespace=openshift-monitoring* to the existing containers *args* section of Prometheus Operator's Deployment definition in the `bundle.yaml` file.
+The *--deny-namespace* argument allows the exclusion of certain namespaces watched by the Prometheus Operator. By default, Prometheus Operator oversees Prometheus deployments across all namespaces. This could be problematic if there are multiple Prometheus Operator deployments on the OKD cluster. For instance, the OKD's Cluster Monitoring feature also deploys a Prometheus Operator in namespace *openshift-monitoring*.  Therefore, *openshift-monitoring* namespace should be excluded by our Prometheus Operator to prevent undesired behaviors.
+
+
+5. Save the `bundle.yaml` file and deploy the Prometheus Operator using the following command. 
+
+[role="command"]
+----
+[root@rhel7-okd ~]# oc apply -f bundle.yaml
 ----
 
 You may receive an error message like the one below when running the command.
@@ -75,7 +86,7 @@ To correct the error, change the **runAsUser: 65534** field in the `bundle.yaml`
 [role="command"]
 ----
 [root@rhel7-okd ~]# oc delete -f bundle.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
+[root@rhel7-okd ~]# oc apply -f bundle.yaml
 ----
 
 service_monitor.yaml
@@ -103,14 +114,14 @@ The [hotspot file=0]`service_monitor.yaml` file defines a ServiceMonitor resourc
 Create the `service_monitor.yaml` file
 ----
 
-4. Apply the `servicemonitor.yaml` file to create the ServiceMonitor resource.
+6. Apply the `servicemonitor.yaml` file to create the ServiceMonitor resource.
 
 [role="command"]
 ----
 [root@rhel7-okd ~]# oc apply -f service_monitor.yaml
 ----
 
-5. Define a Prometheus resource that can scrape the targets defined in the ServiceMonitor resource. 
+7. Define a Prometheus resource that can scrape the targets defined in the ServiceMonitor resource. 
 Create a [hotspot file=1]`prometheus.yaml` file that aggregates all the files from the git repository directory `prometheus-operator/example/rbac/prometheus/`. NOTE: Make sure to change the `namespace: default` to `namespace: prometheus-operator`.
 
 [role="code_command hotspot file=1", subs="quotes"]
@@ -118,15 +129,15 @@ Create a [hotspot file=1]`prometheus.yaml` file that aggregates all the files fr
 Create the `prometheus.yaml` file
 ----
 
-6. Apply the `prometheus.yaml` file to deploy the Prometheus service. After all the resources are created, apply the Prometheus Operator `bundle.yaml` file again.
+8. Apply the `prometheus.yaml` file to deploy the Prometheus service. After all the resources are created, apply the Prometheus Operator `bundle.yaml` file again.
 
 [role="command"]
 ----
 [root@rhel7-okd ~]# oc apply -f prometheus.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml --deny-namespaces=openshift-monitoring
+[root@rhel7-okd ~]# oc apply -f bundle.yaml
 ----
 
-7. Verify that the Prometheus services have successfully started. The prometheus-operated service is created automatically by the prometheus-operator, and is used for registering all deployed Prometheus instances. 
+9. Verify that the Prometheus services have successfully started. The prometheus-operated service is created automatically by the prometheus-operator, and is used for registering all deployed Prometheus instances. 
 
 [source,role="no_copy"]
 ----
@@ -137,7 +148,7 @@ prometheus-operated   ClusterIP   None             <none>        9090/TCP       
 prometheus-operator   ClusterIP   None             <none>        8080/TCP         21h
 ----
 
-8. Expose the prometheus-operated service to use the Prometheus console externally.
+10. Expose the prometheus-operated service to use the Prometheus console externally.
 
 [source,role="no_copy"]
 ----
@@ -147,24 +158,24 @@ NAME         HOST/PORT                                                 PATH     
 prometheus   prometheus-prometheus-operator.apps.9.37.135.153.nip.io             prometheus   web                     None
 ----
 
-9. Visit the *prometheus* route and go to the Prometheus *targets* page. At this point, the page should be empty with no endpoints being discovered. 
+11. Visit the *prometheus* route and go to the Prometheus *targets* page. At this point, the page should be empty with no endpoints being discovered. 
 
 
-10. Look at the `prometheus.yaml` file and update the *serviceMonitorNamespaceSelector* and *serviceMonitorSelector* fields. The ServiceMonitor needs to satisfy the matching requirement for both selectors before it can be picked up by the Prometheus service, like in the [hotspot file=2]`prometheus_snippet.yaml` file. In this case,our ServiceMonitor has the *k8s-app* label, but the target namespace *"myapp"* is missing the required *prometheus: monitoring* label. 
+12. Look at the `prometheus.yaml` file and update the *serviceMonitorNamespaceSelector* and *serviceMonitorSelector* fields. The ServiceMonitor needs to satisfy the matching requirement for both selectors before it can be picked up by the Prometheus service, like in the [hotspot file=2]`prometheus_snippet.yaml` file. In this case,our ServiceMonitor has the *k8s-app* label, but the target namespace *"myapp"* is missing the required *prometheus: monitoring* label. 
 
 [role="code_command hotspot file=2", subs="quotes"]
 ----
 Update `prometheus.yaml` to reflect the `prometheus_snippet.yaml` file
 ----
 
-11. Add the label to the *"myapp"* namespace.
+13. Add the label to the *"myapp"* namespace.
 
 [role="command"]
 ----
 [root@rhel7-okd]# oc label namespace myapp prometheus=monitoring
 ----
 
-12. Check to see that the Prometheus targets page is picking up the target endpoints. If the service endpoint is discovered, but Prometheus is reporting a *DOWN* status, you need to make the prometheus-operator project globally accessible.
+14. Check to see that the Prometheus targets page is picking up the target endpoints. If the service endpoint is discovered, but Prometheus is reporting a *DOWN* status, you need to make the prometheus-operator project globally accessible.
 
 [role="command"]
 ----
