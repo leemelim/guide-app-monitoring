@@ -114,7 +114,7 @@ The [hotspot file=0]`service_monitor.yaml` file defines a ServiceMonitor resourc
 Create the `service_monitor.yaml` file
 ----
 
-6. Apply the `servicemonitor.yaml` file to create the ServiceMonitor resource.
+6. Apply the `service_monitor.yaml` file to create the ServiceMonitor resource.
 
 [role="command"]
 ----
