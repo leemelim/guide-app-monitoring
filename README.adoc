@@ -63,8 +63,8 @@ The following procedure is based on the https://github.com/coreos/prometheus-ope
 
 3. Open the `bundle.yaml` file and change all instances of **namespace: default** to the the newly created namespace **namespace: prometheus-operator**
 
-4. Add the line *- --deny-namespace=openshift-monitoring* to the existing containers *args* section of Prometheus Operator's Deployment definition in the `bundle.yaml` file.
-The *--deny-namespace* argument allows the exclusion of certain namespaces watched by the Prometheus Operator. By default, Prometheus Operator oversees Prometheus deployments across all namespaces. This could be problematic if there are multiple Prometheus Operator deployments on the OKD cluster. For instance, the OKD's Cluster Monitoring feature also deploys a Prometheus Operator in namespace *openshift-monitoring*.  Therefore, *openshift-monitoring* namespace should be excluded by our Prometheus Operator to prevent undesired behaviors.
+4. Add the line *- --deny-namespaces=openshift-monitoring* to the existing containers *args* section of Prometheus Operator's Deployment definition in the `bundle.yaml` file.
+The *--deny-namespaces* argument allows the exclusion of certain namespaces watched by the Prometheus Operator. By default, Prometheus Operator oversees Prometheus deployments across all namespaces. This could be problematic if there are multiple Prometheus Operator deployments on the OKD cluster. For instance, the OKD's Cluster Monitoring feature also deploys a Prometheus Operator in namespace *openshift-monitoring*.  Therefore, *openshift-monitoring* namespace should be excluded by our Prometheus Operator to prevent undesired behaviors.
 
 
 5. Save the `bundle.yaml` file and deploy the Prometheus Operator using the following command. 
