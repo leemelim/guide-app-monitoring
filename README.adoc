@@ -8,7 +8,7 @@ permalink: /guides/app-monitoring/
 :page-guide-category: basic
 :page-description: Learn how to monitor applications on OKD with Prometheus and Grafana.
 :page-tags: ['monitoring', 'prometheus', 'grafana']
-= Application Monitoring on OK with Prometheus and Grafana
+= Application Monitoring on OKD with Prometheus and Grafana
 
 == Introduction
 
