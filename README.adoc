@@ -68,14 +68,14 @@ The following procedure is based on the https://github.com/coreos/prometheus-ope
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# git clone https://github.com/coreos/prometheus-operator
+git clone https://github.com/coreos/prometheus-operator
 ----
 +
 . Create a new namespace for our Prometheus Operator deployment.
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-project prometheus-operator
+oc new-project prometheus-operator
 ----
 +
 . Open the `bundle.yaml` file and change all instances of **namespace: default** to the the newly created namespace **namespace: prometheus-operator**
@@ -87,7 +87,7 @@ The *--deny-namespaces* argument allows the exclusion of certain namespaces watc
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+oc apply -f bundle.yaml
 ----
 +
 You may receive an error message like the one below when running the command.
@@ -101,8 +101,8 @@ To correct the error, change the **runAsUser: 65534** field in the `bundle.yaml`
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc delete -f bundle.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+oc delete -f bundle.yaml
+oc apply -f bundle.yaml
 ----
 +
 The [hotspot file=0]`service_monitor.yaml` file defines a ServiceMonitor resource. A ServiceMonitor defines a service endpoint that needs to be monitored by the Prometheus instance. Take for example, an application with label **app: myapp** from namespace **myapp**, and metrics endpoints defined in **spec.endpoints** to be monitored by the Promtheus Operator. If the metrics endpoint is secured, you can define a secured endpoint with authentication configuration by following the https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint[endpoint] API documentation of Prometheus Operator.
@@ -116,7 +116,7 @@ Create the `service_monitor.yaml` file
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f service_monitor.yaml
+oc apply -f service_monitor.yaml
 ----
 +
 . Define a Prometheus resource that can scrape the targets defined in the ServiceMonitor resource. 
@@ -131,15 +131,15 @@ Create the `prometheus.yaml` file
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f prometheus.yaml
-[root@rhel7-okd ~]# oc apply -f bundle.yaml
+oc apply -f prometheus.yaml
+oc apply -f bundle.yaml
 ----
 +
 . Verify that the Prometheus services have successfully started. The prometheus-operated service is created automatically by the prometheus-operator, and is used for registering all deployed Prometheus instances. 
 +
 [source,role="no_copy"]
 ----
-[root@rhel7-okd ~]# oc get svc -n prometheus-operator
+oc get svc -n prometheus-operator
 NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 prometheus            NodePort    172.30.112.199   <none>        9090:30342/TCP   19h
 prometheus-operated   ClusterIP   None             <none>        9090/TCP         19h
@@ -197,21 +197,21 @@ For users who just migrated their applications to OKD and define their own Prome
 
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-project prometheus
+oc new-project prometheus
 ----
 
 . Deploy the Prometheus using the sample `prometheus.yaml` file from https://github.com/openshift/origin/tree/master/examples/prometheus[here]
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/prometheus/prometheus.yaml -p NAMESPACE=prometheus
+oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/prometheus/prometheus.yaml -p NAMESPACE=prometheus
 ----
 +
 . Edit the *"prometheus"* ConfigMap resource from the *prometheus* namespace. 
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]#  oc edit configmap/prometheus -n prometheus
+ oc edit configmap/prometheus -n prometheus
 ----
 +
 . Remove all existing jobs and add the following [hotspot file=0]`scrap_configs` job. 
@@ -220,7 +220,7 @@ For users who just migrated their applications to OKD and define their own Prome
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc exec prometheus-0 -c prometheus -- curl -X POST http://localhost:9090/-/reload
+oc exec prometheus-0 -c prometheus -- curl -X POST http://localhost:9090/-/reload
 ----
 +
 [role="code_command hotspot file=1"]
@@ -251,21 +251,21 @@ Regardless of which approach was used to deploy Prometheus on OKD, use Grafana d
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-project grafana
+oc new-project grafana
 ----
 +
 . Deploy Grafana using the `grafana.yaml` file from the OKD GitHub repository.
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/grafana/grafana.yaml -p NAMESPACE=grafana
+oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/grafana/grafana.yaml -p NAMESPACE=grafana
 ----
 +
 . Grant the *grafana* service account view access to the *prometheus* namespace 
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc policy add-role-to-user view system:serviceaccount:grafana:grafana -n prometheus
+oc policy add-role-to-user view system:serviceaccount:grafana:grafana -n prometheus
 ----
 +
 . For Grafana to add existing Prometheus datasources in OKD, define the datasources in a ConfigMap resource under the grafana namespace. Create a ConfigMap yaml file called [hotspot]`grafana-datasources.yaml`. 
@@ -274,14 +274,14 @@ Regardless of which approach was used to deploy Prometheus on OKD, use Grafana d
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc apply -f grafana-datasources.yaml
+oc apply -f grafana-datasources.yaml
 ----
 +
 . Acquire the *[grafana-ocp token]* by using the following command.
 +
 [role="command"]
 ----
-[root@rhel7-okd ~]# oc sa get-token grafana
+oc sa get-token grafana
 ----
 +
 . Add the ConfigMap resource to the Grafana application and mount it to `/usr/share/grafana/datasources`.
