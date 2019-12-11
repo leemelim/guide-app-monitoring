@@ -12,7 +12,7 @@ permalink: /guides/app-monitoring/
 
 == Introduction
 
-__The following guide has been tested with OKD 3.11/Kabanero 0.2.0.__
+__The following guide has been tested with OKD 4.2/Kabanero 0.3.0.__
 
 
 For application monitoring on OKD (OpenShift Origin Community Distribution), you need to set up your own Prometheus and Grafana deployments. There are two approaches for setting up Prometheus on OKD. 
